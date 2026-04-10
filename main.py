@@ -10,7 +10,7 @@ app = FastAPI(title="Weather App")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # --- Paste your OpenWeatherMap API key here ---
-API_KEY = "6867c0ebed3d3b47b931ea11428736ba"
+API_KEY = "API KEY HERE"
 BASE_URL = "https://api.openweathermap.org/data/2.5"
 
 
