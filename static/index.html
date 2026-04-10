@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Weather App</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0f172a;
+      color: #f1f5f9;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 3rem 1rem;
+    }
+
+    .container { width: 100%; max-width: 480px; }
+
+    h1 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      color: #94a3b8;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+    }
+
+    .search-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 2rem;
+    }
+
+    input {
+      flex: 1;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      padding: 12px 16px;
+      color: #f1f5f9;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input::placeholder { color: #475569; }
+    input:focus { border-color: #60a5fa; }
+
+    button {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 20px;
+      font-size: 1rem;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+    button:hover { background: #2563eb; }
+
+    .error {
+      background: #450a0a;
+      border: 1px solid #991b1b;
+      color: #fca5a5;
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    .card {
+      background: #1e293b;
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      border: 1px solid #334155;
+    }
+
+    .location {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: 0.2rem;
+    }
+    .description {
+      color: #94a3b8;
+      font-size: 0.95rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .temp-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 1.2rem;
+    }
+    .temp-main {
+      font-size: 4rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .temp-icon { width: 64px; height: 64px; }
+
+    .temp-range {
+      font-size: 0.85rem;
+      color: #64748b;
+      display: flex;
+      gap: 12px;
+    }
+    .temp-range span { color: #94a3b8; }
+
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      margin-top: 1rem;
+    }
+    .stat {
+      background: #0f172a;
+      border-radius: 10px;
+      padding: 10px 12px;
+      text-align: center;
+    }
+    .stat-label { font-size: 0.7rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+    .stat-value { font-size: 1rem; font-weight: 600; }
+
+    .forecast-title {
+      font-size: 0.75rem;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.75rem;
+    }
+
+    .forecast-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .forecast-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #0f172a;
+      border-radius: 10px;
+      padding: 10px 14px;
+    }
+
+    .forecast-day { font-size: 0.9rem; color: #94a3b8; width: 80px; }
+    .forecast-desc { font-size: 0.85rem; color: #64748b; flex: 1; text-align: center; }
+    .forecast-temps { font-size: 0.9rem; display: flex; gap: 10px; }
+    .f-high { color: #f1f5f9; font-weight: 600; }
+    .f-low { color: #475569; }
+
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Weather</h1>
+
+  <div class="search-row">
+    <input type="text" id="city-input" placeholder="Enter a city..." />
+    <button onclick="search()">Search</button>
+  </div>
+
+  <div class="error" id="error-box"></div>
+
+  <div id="current-card" class="card hidden">
+    <div class="location" id="location"></div>
+    <div class="description" id="desc"></div>
+    <div class="temp-row">
+      <div class="temp-main" id="temp"></div>
+      <img class="temp-icon" id="icon" src="" alt="weather icon" />
+    </div>
+    <div class="temp-range">
+      <div>H: <span id="temp-high"></span></div>
+      <div>L: <span id="temp-low"></span></div>
+      <div>Feels like <span id="feels"></span></div>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="stat-label">Humidity</div><div class="stat-value" id="humidity"></div></div>
+      <div class="stat"><div class="stat-label">Wind</div><div class="stat-value" id="wind"></div></div>
+      <div class="stat"><div class="stat-label">Visibility</div><div class="stat-value" id="visibility"></div></div>
+    </div>
+  </div>
+
+  <div id="forecast-card" class="card hidden">
+    <div class="forecast-title">5-Day Forecast</div>
+    <div class="forecast-grid" id="forecast-grid"></div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('city-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') search();
+  });
+
+  function dayName(dateStr) {
+    const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    return days[new Date(dateStr + 'T12:00:00').getDay()];
+  }
+
+  function showError(msg) {
+    const el = document.getElementById('error-box');
+    el.textContent = msg;
+    el.style.display = 'block';
+    document.getElementById('current-card').classList.add('hidden');
+    document.getElementById('forecast-card').classList.add('hidden');
+  }
+
+  async function search() {
+    const city = document.getElementById('city-input').value.trim();
+    if (!city) return;
+
+    document.getElementById('error-box').style.display = 'none';
+
+    try {
+      const [weather, forecast] = await Promise.all([
+        fetch(`/weather?city=${encodeURIComponent(city)}`).then(r => r.json()),
+        fetch(`/forecast?city=${encodeURIComponent(city)}`).then(r => r.json())
+      ]);
+
+      if (weather.detail) { showError(weather.detail); return; }
+
+      document.getElementById('location').textContent = `${weather.city}, ${weather.country}`;
+      document.getElementById('desc').textContent = weather.description;
+      document.getElementById('temp').textContent = `${weather.temp}°F`;
+      document.getElementById('icon').src = `https://openweathermap.org/img/wn/${weather.icon}@2x.png`;
+      document.getElementById('temp-high').textContent = `${weather.temp_max}°F`;
+      document.getElementById('temp-low').textContent = `${weather.temp_min}°F`;
+      document.getElementById('feels').textContent = `${weather.feels_like}°F`;
+      document.getElementById('humidity').textContent = `${weather.humidity}%`;
+      document.getElementById('wind').textContent = `${weather.wind_speed} mph`;
+      document.getElementById('visibility').textContent = `${weather.visibility} mi`;
+
+      document.getElementById('current-card').classList.remove('hidden');
+
+      const grid = document.getElementById('forecast-grid');
+      grid.innerHTML = forecast.forecast.map(day => `
+        <div class="forecast-row">
+          <div class="forecast-day">${dayName(day.date)}</div>
+          <div class="forecast-desc">${day.description}</div>
+          <div class="forecast-temps">
+            <span class="f-high">${day.temp_max}°</span>
+            <span class="f-low">${day.temp_min}°</span>
+          </div>
+        </div>
+      `).join('');
+
+      document.getElementById('forecast-card').classList.remove('hidden');
+
+    } catch (err) {
+      showError('Something went wrong. Make sure the server is running.');
+    }
+  }
+</script>
+</body>
+</html>
